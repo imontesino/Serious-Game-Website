@@ -16,6 +16,9 @@ app = Flask(__name__)
 def retour_index():
 	return "<a href='" + url_for("index") + "'>retour à l'index</a><br/><br/>"
 
+def render_page(name):
+	return render_template(str(name) + ".html")
+
 # renvoie un formulaire vers la page cible demandant un prénom (avec une valeur par défaut)
 def formulaire_prenom(cible, prenom = "entrez votre prénom"):
 	formulaire = ""
@@ -101,30 +104,57 @@ def insertion_personne(nom, prenom, role):
 # une page index avec des liens vers les différentes pages d'exemple d'utilisation de Flask
 @app.route('/')
 def index():
-	return render_template('index.html')
+    return render_template('index.html')
 
+@app.route('/agilean')
+def agilean():
+    return render_template('agilean.html')
+
+@app.route('/commande')
+def commande():
+    return render_template('commande.html')
+
+@app.route('/insert')
+def insert():
+    #if request.method == 'POST':
+    #    pass
+    return render_template('Insert.html')
+
+@app.route('/ajout_tache')
+def ajout_tache():
+    return render_template('ajout_tache.html')
+
+@app.route('/tache_php')
+def tache():
+    return render_template('tache.php')
+
+@app.route('/contact_php')
+def contact():
+    return render_template('contact.php')
 
 
 
 # une page avec du texte statique
+
+
 @app.route('/hello')
 def hello():
 
-	contenu = ""
-	contenu += retour_index()
-	contenu += "Hello, World !"
+    contenu = ""
+    contenu += retour_index()
+    contenu += "Hello, World !"
 
-	return contenu
+    return contenu
 
 # une page avec du texte dynamique déterminé par l'URL
 @app.route('/hello_url/<prenom>')
 def hello_url_prenom(prenom):
 
-	contenu = ""
-	contenu += retour_index()
-	contenu += "Hello, " + prenom + " !"
+    contenu = ""
+    contenu += retour_index()
+    contenu += "Hello, " + prenom + " !"
 
-	return contenu
+    return contenu
 
 # une page avec un entier dynamique déterminé par l'URL
 @app.route('/hello_url_entier/<int:valeur>')

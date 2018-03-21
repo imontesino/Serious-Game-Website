@@ -7,7 +7,7 @@
     <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <![endif]-->
-    <title>Enregistrer une commande</title>
+    <title>Affectation d'une tache</title>
  
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     
@@ -22,22 +22,23 @@
 <body>
 <div class="row main-top-margin text-center">
 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1" data-scrollreveal="enter top and move 100px, wait 0.5s">
-<h1>Formulaire d'enregistrement d'une commande</h1>
+<h1>Formulaire d'affectation d'une tache</h1>
 <h4>
-Veuillez renseigner les informations ci-dessous pour enregistrer une commande
+Veuillez renseigner les informations ci-dessous pour programmer une tache
  </h4>
 </div>
 </div>
-<form  method="post"  action="commande.php">
+<form  method="post"  action="ajout_tache.php">
 
-Code de commande:  <input type="text" name="code_cmd"  / >
-<br><br>
-Code client :    <input type="text" name="code_clt"  />
+Code de tache:  <input type="text" name="code_tache"  / >
 <br><br>
 Code de responsable :    <input type="text" name="code_resp"  />
 <br><br>
-Code de produit : <input type="text" name="code_prd"/> <br><br>
-Date de livraison: <input type="text" name="date_livraison"/> <br><br>
+Code de technicien :    <input type="text" name="code_tec"  />
+<br><br>
+Type de tache: <input type="text" name="type_tache"/> <br><br>
+Date de debut: <input type="text" name="date_debut"/> <br><br>
+Date de fin : <input type="text" name="date_fin"/> <br><br>
 <input type="submit" value="Valider" />
 
 
