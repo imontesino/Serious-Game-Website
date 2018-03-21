@@ -36,7 +36,7 @@ $requete = $bdd->prepare("insert into produit(code_prd,code_cat,nom_prod,prix,qu
 $requete->execute(array($_POST['code_prd'],$_POST['code_cat'],$_POST['nom_prod'],$_POST['prix'],$_POST['quantite']));
 ?>
 
- <br><br><br><br><a href="Insert.html"> Retour a la page precedante<a> <br><br><br><br>
+ <br><br><br><br><a href={{  url_for('insert')  }}> Retour a la page precedante<a> <br><br><br><br>
   </body>
   <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">

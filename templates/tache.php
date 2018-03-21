@@ -62,7 +62,7 @@ Cette base contient le programme des taches a effectuer pour chaque technicien a
    ?>
    </tr>
    </table>
-   <br><br><br><br><a href="index.html"> Retour a la page d'acceuil<a> <br><br><br><br>
+   <br><br><br><br><a href={{  url_for('index')  }}> Retour a la page d'acceuil<a> <br><br><br><br>
   </body>
   <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
