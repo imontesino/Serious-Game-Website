@@ -7,13 +7,15 @@
     <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <![endif]-->
-    <title>Agilean</title>
+    <title>Agilog</title>
  
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     
     <link href="static/assets/css/bootstrap.css" rel="stylesheet" />
     
     <link href="static/assets/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
     <link href="static/assets/css/style.css" rel="stylesheet" />
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -22,7 +24,7 @@
 <body>
 <div class="row main-top-margin text-center">
 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1" data-scrollreveal="enter top and move 100px, wait 0.5s">
-<h1>Bienvenu chez Agilean</h1>
+<h1>Bienvenue chez Agilog</h1>
 <h4>
 Veuillez trouver ci-dessous la liste des commandes
  </h4>
@@ -34,32 +36,22 @@ Veuillez trouver ci-dessous la liste des commandes
            
             <div class="row main-low-margin text-center">
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter left and move 100px, wait 0.8s">
-                  <a href={{ url_for('lancer_of') }}> <i class="fa fa-plus fa-5x color-blue"></i></a>
-                    <h3><a href={{ url_for('lancer_oa') }}>Lancer OF</a></h3>
+                  <a href="prepa_commande.html"> <i class="fa fa-cubes fa-5x color-blue"></i></a>
+                    <h3><a href="prepa_commande.html">Lancer préparation d'une commande</a></h3>
                 </div>               
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter bottom and move 100px, wait 0.8s">
-                    <a href={{ url_for('lancer_oa') }}>><i class="fa fa-plus fa-5x color-black"></i></a>
-                    <h3><a href={{ url_for('lancer_oa') }}>Lancer OA</a></h3>
+                    <a href="livraison_agilean.html"><i class="fa fa-barcode fa-5x color-black"></i></a>
+                    <h3><a href="livraison_agilean.html">Livrer Agilean</a></h3>
                 </div>
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
 
-                    <a href={{ url_for('reception_composants') }}><i class="fa fa-plus fa-5x color-light-blue"></i></a>
-                    <h3><a href={{ url_for('reception_composants') }}> Réception composants </a></h3>
-                </div>
-
-<div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
-                    <a href={{ url_for('qualite') }}><i class="fa fa-plus fa-5x color-light-blue"></i></a>
-                    <h3><a href={{ url_for('qualite') }}> Déclarer un problème qualité </a></h3>
-                </div>
-
-<div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
-                    <a href={{ url_for('livraison') }}><i class="fa fa-plus fa-5x color-light-blue"></i></a>
-                    <h3><a href={{ url_for('livraison') }}> Livrer client </a></h3>
+                    <a href="commandes_en_cours.html"><i class="fa fa-file-text fa-5x color-light-blue"></i></a>
+                    <h3><a href="commandes_en_cours.html"> Consulter les commandes en cours de préparation </a></h3>
                 </div>
 		</div>
 
 
-<br/><br/><a href={{ url_for('index') }}> Retour a la page principale<a/>
+<br/><br/><a href="index.html"> Retour a la page principale<a/>
 
 </body>
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -70,6 +62,6 @@ Veuillez trouver ci-dessous la liste des commandes
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Serious Game - Interface Agilean</a>
+                <a class="navbar-brand" href="#">Serious Game - Interface Agilog</a>
             </div>
 </html>

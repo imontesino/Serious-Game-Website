@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="fr"> <![endif]-->
 <!--[if IE 7 ]><html class="ie ie7" lang="fr"> <![endif]-->
 <!--[if IE 8 ]><html class="ie ie8" lang="fr"> <![endif]-->
@@ -15,7 +15,7 @@
     <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <![endif]-->
-    <title>Gestion de l'atelier de fabrication</title>
+    <title>Système de gestion Agilean/Agilog</title>
     <!--GOOGLE FONT -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <!--BOOTSTRAP MAIN STYLES -->
@@ -41,7 +41,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Atelier de fabrication KMNO</a>
+                <a class="navbar-brand" href="#">Serious game</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -60,11 +60,11 @@
         <div class="container">
             <div class="row centered">
                 <div class="col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
-                    <h1> <FONT COLOR=blue> Bienvenue dans
+                    <h1> <FONT COLOR=white> Bienvenue dans
                         <br />
-                        <strong>l'interface de gestion de l'atelier de fabrication </strong>
+                        <strong>l'interface de gestion Agilean/Agilog </strong>
                     </h1>
-                    <h2><FONT COLOR=blue> KMNO</h2>
+                    <h2><FONT COLOR=white> Serious game</h2>
                      <br />
                   <a href="#services-section">  <i class="fa fa-angle-double-down fa-5x color-blue "></i> </a>
                 </div>
@@ -82,50 +82,34 @@
             <div class="row main-top-margin text-center">
                 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1" data-scrollreveal="enter top and move 100px, wait 0.5s">
                     <h1>Les services disponibles</h1>
-                    <h4> Choisissez l'interface que vous desirez !
+                    <h4><FONT COLOR=blue> Choisissez l'interface que vous desirez !
                      </h4>
 
                 </div>
             </div>
             <!-- ./ Main Heading-->
            
-            <div class="row main-low-margin text-center">
+            <div class="rowhref main-low-margin text-center">
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter left and move 100px, wait 0.8s">
-                   <i class="fa fa-desktop fa-5x color-blue"></i>
-                    <h3><a href="/templates/Afficher.php">Afficher les produits de l'atelier</h3>
+                   <a href={{url_for('agilean') }}><i class="glyphicon glyphicon-home fa-5x color-blue"></i></a>
+                    <h3><a href={{url_for('agilean') }}>Agilean</a></h3>
                 </div>               
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter bottom and move 100px, wait 0.8s">
-                    <i class="fa fa-plus fa-5x color-black"></i>
-                    <h3><a href={{  url_for('insert')  }}>Ajouter un produit fini</h3>
+                    <a href={{url_for('agilog') }}><i class="fa fa-truck fa-5x color-black"></i></a>
+                    <h3><a href={{url_for('agilog') }}>Agilog</a></h3>
                 </div>
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
-                    <i class="fa fa-cogs fa-5x color-light-blue"></i>
-                    <h3><a href={{  url_for('ajout_tache')  }}> Affecter une tache de fabrication d'un produit </h3>
+                    <a href={{url_for('client') }}><i class="glyphicon glyphicon-briefcase fa-5x color-light-blue"></i></a>
+                    <h3><a href={{url_for('client') }}> Client </a></h3>
                 </div>
             </div>
-              <!-- ./ Row Content-->
-               <div class="row main-low-margin text-center" >
-                <div class="col-md-4 col-sm-4" data-scrollreveal="enter left and move 100px, wait 0.8s">
-                   <i class="fa fa-print fa-5x color-green" ></i>
-                    <h3><a href={{  url_for('commande')  }}>Enregister une commande</h3>
-                </div>               
-                    <div class="col-md-4 col-sm-4" data-scrollreveal="enter bottom and move 100px, wait 0.8s">
-                    <i class="fa fa-calendar fa-5x color-red"></i>
-                    <h3><a href={{  url_for('tache')  }}> Visualiser les taches planifiees </h3>
-                    
-                </div>
-                <div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
-                    <i class="fa fa-phone fa-5x color-brown"></i>
-                    <h3> <a href={{  url_for('contact')  }}> Contactez un fournisseur</h3>
-                   
-                </div>
-            </div>
-              <!-- ./ Row Content-->
+
         </div>
     </div>
+
     <!--END SERVICES SECTION -->
  <!--ABOUT SECTION -->
- <div id="about-section" >
+    <div id="about-section" >
         <div class="container" >
             <div class="row main-top-margin text-center">
                 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1" data-scrollreveal="enter top and move 100px, wait 0.5s">
@@ -142,7 +126,7 @@
                     <img class="img-circle" src="static/assets/img/team/equipe4.png" alt="">
                     <h4>EL DACHRI Faissal</h4>
                     <p>
-                        Elève ingénieur en 2ème année cycle d'ingénieur généraliste
+                        Expert métier - Elève ingénieur en 2ème année cycle d'ingénieur généraliste
 
                     </p>
                     <p>
@@ -158,7 +142,7 @@
                     <img class="img-circle" src="static/assets/img/team/equipe1.png" alt="">
                     <h4>NAJID Omar</h4>
                     <p>
-                        Elève ingénieur en 2ème année cycle d'ingénieur généraliste
+                        Chef de Projet - Elève ingénieur en 2ème année cycle d'ingénieur généraliste
 
 
                     </p>
@@ -167,7 +151,7 @@
                         <a href="#"><i class="fa fa-twitter-square fa-2x color-twitter"></i></a>
                         <a href="#"><i class="fa fa-google-plus-square fa-2x color-google-plus"></i></a>
                         <a href="#"><i class="fa fa-linkedin-square fa-2x color-linkedin"></i></a>
-
+                        
 
                     </p>
 
@@ -176,7 +160,7 @@
                     <img class="img-circle" src="static/assets/img/team/equipe2.png" alt="">
                     <h4>GAUTIER-SIMARD Siméon</h4>
                     <p>
-                        Elève ingénieur en 2ème année cycle d'ingénieur généraliste
+                        Programmeur - Elève ingénieur en 2ème année cycle d'ingénieur généraliste
 
                      </p>
                     <p>
@@ -184,7 +168,7 @@
                         <a href="#"><i class="fa fa-twitter-square fa-2x color-twitter"></i></a>
                         <a href="#"><i class="fa fa-google-plus-square fa-2x color-google-plus"></i></a>
                         <a href="#"><i class="fa fa-linkedin-square fa-2x color-linkedin"></i></a>
-
+                        
                     </p>
 
                 </div>
@@ -193,7 +177,7 @@
                     <img class="img-circle" src="static/assets/img/team/equipe5.png" alt="">
                     <h4>BECT Oscar</h4>
                     <p>
-                        Elève ingénieur en 2ème année cycle d'ingénieur généraliste
+                        Web designer - Elève ingénieur en 2ème année cycle d'ingénieur généraliste
 
                      </p>
                     <p>
@@ -201,7 +185,7 @@
                         <a href="#"><i class="fa fa-twitter-square fa-2x color-twitter"></i></a>
                         <a href="#"><i class="fa fa-google-plus-square fa-2x color-google-plus"></i></a>
                         <a href="#"><i class="fa fa-linkedin-square fa-2x color-linkedin"></i></a>
-
+                        
                     </p>
 
                 </div>
@@ -210,7 +194,7 @@
                     <img class="img-circle" src="static/assets/img/team/equipe3.png" alt="">
                     <h4>ROUVIERE Mathieu</h4>
                     <p>
-                        Elève ingénieur en 2ème année cycle d'ingénieur généraliste
+                        Web designer - Elève ingénieur en 2ème année cycle d'ingénieur généraliste
 
                     </p>
                     <p>
@@ -218,7 +202,7 @@
                         <a href="#"><i class="fa fa-twitter-square fa-2x color-twitter"></i></a>
                         <a href="#"><i class="fa fa-google-plus-square fa-2x color-google-plus"></i></a>
                         <a href="#"><i class="fa fa-linkedin-square fa-2x color-linkedin"></i></a>
-
+                        
 
                     </p>
 
@@ -228,7 +212,7 @@
                     <img class="img-circle" src="static/assets/img/team/equipe6.png" alt="">
                     <h4>BRUGUIER Valentin</h4>
                     <p>
-                        Elève ingénieur en 2ème année cycle d'ingénieur généraliste
+                        Web designer - Elève ingénieur en 2ème année cycle d'ingénieur généraliste
 
                     </p>
                     <p>
@@ -236,7 +220,7 @@
                         <a href="#"><i class="fa fa-twitter-square fa-2x color-twitter"></i></a>
                         <a href="#"><i class="fa fa-google-plus-square fa-2x color-google-plus"></i></a>
                         <a href="#"><i class="fa fa-linkedin-square fa-2x color-linkedin"></i></a>
-
+                        
 
                     </p>
 
@@ -246,7 +230,7 @@
                     <img class="img-circle" src="static/assets/img/team/equipe7.png" alt="">
                     <h4>SALAZAR Rodrigo</h4>
                     <p>
-                        Elève ingénieur en 2ème année cycle d'ingénieur généraliste
+                        Expert métier - Elève ingénieur en 2ème année cycle d'ingénieur généraliste
 
                     </p>
                     <p>
@@ -254,7 +238,7 @@
                         <a href="#"><i class="fa fa-twitter-square fa-2x color-twitter"></i></a>
                         <a href="#"><i class="fa fa-google-plus-square fa-2x color-google-plus"></i></a>
                         <a href="#"><i class="fa fa-linkedin-square fa-2x color-linkedin"></i></a>
-
+                        
 
                     </p>
 
@@ -264,7 +248,7 @@
                     <img class="img-circle" src="static/assets/img/team/equipe8.png" alt="">
                     <h4>MONTESINO VALLE Ignacio</h4>
                     <p>
-                        Elève ingénieur en 2ème année cycle d'ingénieur généraliste
+                        Programmeur - Elève ingénieur en 2ème année cycle d'ingénieur généraliste
 
                     </p>
                     <p>
@@ -272,7 +256,7 @@
                         <a href="#"><i class="fa fa-twitter-square fa-2x color-twitter"></i></a>
                         <a href="#"><i class="fa fa-google-plus-square fa-2x color-google-plus"></i></a>
                         <a href="#"><i class="fa fa-linkedin-square fa-2x color-linkedin"></i></a>
-
+                        
 
                     </p>
 
@@ -282,7 +266,7 @@
                     <img class="img-circle" src="static/assets/img/team/equipe9.png" alt="">
                     <h4>DUQUE ARIAS Daniel</h4>
                     <p>
-                        Elève ingénieur en 2ème année cycle d'ingénieur généraliste
+                        Programmeur - Elève ingénieur en 2ème année cycle d'ingénieur généraliste
 
                     </p>
                     <p>
@@ -290,7 +274,7 @@
                         <a href="#"><i class="fa fa-twitter-square fa-2x color-twitter"></i></a>
                         <a href="#"><i class="fa fa-google-plus-square fa-2x color-google-plus"></i></a>
                         <a href="#"><i class="fa fa-linkedin-square fa-2x color-linkedin"></i></a>
-
+                        
 
                     </p>
 
@@ -309,7 +293,7 @@
                 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1" data-scrollreveal="enter top and move 100px, wait 0.5s">
                     <h1>Contactez-nous</h1>
                     <h4>
-                       Nous serons toujours a votre disposition, vos remarques et propositions nous interessent !
+                       Nous serons toujours à votre disposition, vos remarques et propositions nous intéressent !
                        
                     </h4>
                 </div>
@@ -322,10 +306,10 @@
                         <hr />
                         <p>
                         Ecole Nationale Superieure d'Arts et Metiers,<br /> 
-                        Avenue Nile 150.<br />                          
-                        Casablanca, 
-                        Grand Casablanca CP<br />
-                       <A HREF="http://www.ensam-casa.ma" target="_blank">Site Web de l'ENSAM</A>
+                        Centre d'Aix en Provence<br />                          
+                        2, cours des Arts et Metiers
+                        13617 Aix-en-Provence Cedex 01<br />
+                       <A HREF="https://artsetmetiers.fr" target="_blank">Site Web des Arts et Metiers ParisTech</A>
                             </p>
                         <h3> Reseaux sociaux</h3>
                         <a href="#"><i class="fa fa-facebook-square fa-3x color-facebook"></i></a>
@@ -373,7 +357,7 @@
     <div id="footer">
         <div class="container">
             <div class="row ">
-                &copy; Annee academique 2017/2018 Serious Game | Organiser-Excellence opérationnelle			
+                &copy; Année academique 2017/2018 Serious Game | Organiser-Excellence opérationnelle			
 		
             </div>
             

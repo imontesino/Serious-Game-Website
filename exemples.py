@@ -42,7 +42,7 @@ def formulaire_number(cible, number="entrez votre prénom"):
 # connecte à la BDD, affecte le mode dictionnaire aux résultats de requêtes et renvoie un curseur
 def connection_bdd():
 
-	con = lite.connect('exemples.db')
+	con = lite.connect('BD serious game.db')
 	con.row_factory = lite.Row
 
 	return con
@@ -61,7 +61,8 @@ def selection_personnes():
 
 	return lignes
 
-# connecte à la BDD et renvoie les lignes de la table personne dont le prénom commence par la lettre donnée
+# connecte à la B
+# DD et renvoie les lignes de la table personne dont le prénom commence par la lettre donnée
 def selection_personnes_lettre(lettre):
 
 	conn = connection_bdd()
@@ -101,7 +102,7 @@ def insertion_personne(nom, prenom, role):
 # ---------------------------------------
 
 
-# une page index avec des liens vers les différentes pages d'exemple d'utilisation de Flask
+# html
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -110,9 +111,51 @@ def index():
 def agilean():
     return render_template('agilean.html')
 
-@app.route('/commande')
-def commande():
-    return render_template('commande.html')
+@app.route('/passer_une_commande')
+def passer_une_commande():
+    return render_template('passer_une_commande.html')
+
+@app.route('/reception_commande')
+def reception_commande():
+    return render_template('reception_commande.html')
+
+@app.route('/agilog')
+def agilog():
+    return render_template('agilog.html')
+
+@app.route('/client')
+def client():
+    return render_template('client.html')
+
+@app.route('/commandes_en_cours')
+def commandes_en_cours():
+    return render_template('commandes_en_cours.html')
+
+@app.route('/lancer_oa')
+def lancer_oa():
+    return render_template('lancer_oa.html')
+
+@app.route('/lancer_of')
+def lancer_of():
+    return render_template('lancer_of.html')
+
+@app.route('/livraison')
+def livraison():
+    return render_template('livraison.html')
+
+@app.route('/livraison_agilean')
+def livraison_agilean():
+    return render_template('livraison_agilean.html')
+
+@app.route('/qualite')
+def qualite():
+    return render_template('qualite.html')
+
+@app.route('/reception_composants')
+def reception_composants():
+    return render_template('reception_composants.html')
+
+#php
 
 @app.route('/insert')
 def insert():

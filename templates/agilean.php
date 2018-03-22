@@ -36,7 +36,7 @@ $requete = $bdd->prepare("insert into tache(code_tache,code_resp,code_tec,type_t
 $requete->execute(array($_POST['code_tache'],$_POST['code_resp'],$_POST['code_tec'],$_POST['type_tache'],$_POST['date_debut'],$_POST['date_fin']));
 ?>
 
- <br><br><br><br><a href={{  url_for('ajout_tache')  }}"> Retour a la page precedante<a> <br><br><br><br>
+ <br><br><br><br><a href="ajout_tache.html"> Retour a la page precedante<a> <br><br><br><br>
   </body>
   <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">

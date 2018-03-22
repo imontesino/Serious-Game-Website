@@ -12,11 +12,11 @@
  
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     
-    <link href="static/assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="static/assets//css/bootstrap.css" rel="stylesheet" />
     
-    <link href="static/assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="static/assets//css/font-awesome.min.css" rel="stylesheet" />
     
-    <link href="static/assets/css/style.css" rel="stylesheet" />
+    <link href="static/assets//css/style.css" rel="stylesheet" />
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
   </head>
@@ -36,7 +36,7 @@ $requete = $bdd->prepare("insert into produit(code_prd,code_cat,nom_prod,prix,qu
 $requete->execute(array($_POST['code_prd'],$_POST['code_cat'],$_POST['nom_prod'],$_POST['prix'],$_POST['quantite']));
 ?>
 
- <br><br><br><br><a href={{  url_for('insert')  }}> Retour a la page precedante<a> <br><br><br><br>
+ <br><br><br><br><a href="Insert.html"> Retour a la page precedante<a> <br><br><br><br>
   </body>
   <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
