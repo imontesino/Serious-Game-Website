@@ -198,6 +198,10 @@ def qualite():
 def reception_composants():
     return render_template('reception_composants.html')
 
+@app.route('/cmd_urgente')
+def cmd_urgente():
+    return render_template('cmd_urgente.html')
+
 
 
 
