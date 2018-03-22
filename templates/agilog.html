@@ -36,17 +36,17 @@ Veuillez trouver ci-dessous la liste des commandes
            
             <div class="row main-low-margin text-center">
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter left and move 100px, wait 0.8s">
-                  <a href="prepa_commande.html"> <i class="fa fa-cubes fa-5x color-blue"></i></a>
-                    <h3><a href="prepa_commande.html">Lancer préparation d'une commande</a></h3>
+                  <a href="{{url_for(prepa_commande)}}"> <i class="fa fa-cubes fa-5x color-blue"></i></a>
+                    <h3><a href="{{url_for(prepa_commande)}}">Lancer préparation d'une commande</a></h3>
                 </div>               
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter bottom and move 100px, wait 0.8s">
-                    <a href="livraison_agilean.html"><i class="fa fa-barcode fa-5x color-black"></i></a>
-                    <h3><a href="livraison_agilean.html">Livrer Agilean</a></h3>
+                    <a href="{{url_for(livraison_agilean)}}"><i class="fa fa-barcode fa-5x color-black"></i></a>
+                    <h3><a href="{{url_for(livraison_agilean)}}">Livrer Agilean</a></h3>
                 </div>
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
 
-                    <a href="commandes_en_cours.html"><i class="fa fa-file-text fa-5x color-light-blue"></i></a>
-                    <h3><a href="commandes_en_cours.html"> Consulter les commandes en cours de préparation </a></h3>
+                    <a href="{{url_for(commandes_en_cours)}}"><i class="fa fa-file-text fa-5x color-light-blue"></i></a>
+                    <h3><a href="{{url_for(commandes_en_cours)}}"> Consulter les commandes en cours de préparation </a></h3>
                 </div>
 		</div>
 
