@@ -13,34 +13,9 @@ app = Flask(__name__)
 # des fonctions utiles à plusieurs pages
 # ---------------------------------------
 
-# renvoie un lien HTML pour retourner à la page index
-def retour_index():
-    return "<a href='" + url_for("index") + "'>retour à l'index</a><br/><br/>"
-
-
+#afficher un e template html
 def render_page(name):
     return render_template(str(name) + ".html")
-
-
-# renvoie un formulaire vers la page cible demandant un prénom (avec une valeur par défaut)
-def formulaire_prenom(cible, prenom="entrez votre prénom"):
-    formulaire = ""
-    formulaire += "<form method='post' action='" + url_for(cible) + "'>"
-    formulaire += "<input type='text' name='prenom' value='" + prenom + "'>"
-    formulaire += "<input type='submit' value='Envoyer'>"
-    formulaire += "</form><br/>"
-
-    return formulaire
-
-
-def formulaire_number(cible, number="entrez votre prénom"):
-    formulaire = ""
-    formulaire += "<form method='post' action='" + url_for(cible) + "'>"
-    formulaire += "<input type='text' name='prenom' value='" + number + "'>"
-    formulaire += "<input type='submit' value='Envoyer'>"
-    formulaire += "</form><br/>"
-
-    return formulaire
 
 
 # connecte à la BDD, affecte le mode dictionnaire aux résultats de requêtes et renvoie un curseur
@@ -50,45 +25,21 @@ def connection_bdd():
 
     return con
 
-
-# connecte à la BDD et renvoie toutes les lignes de la table personne
-def selection_personnes():
-    conn = connection_bdd()
-    cur = conn.cursor()
-
-    cur.execute("SELECT nom, prenom, role FROM personnes")
-
-    lignes = cur.fetchall()
-
-    conn.close()
-
-    return lignes
+reftotal = 0
 
 
+##################################  Client  ########################################
+
+
+# Afficher toutes les commandes en cours
 def lancer_commande(x, y, z):
+    global reftotal
 
     conn = connection_bdd()
     cur = conn.cursor()
 
-    cur.execute("INSERT INTO Commande('Date_livraison', 'Ref_produit', 'Ref_option') VALUES(" + str(x) + "," + str(y) + "," + str(z) + ")")
-
-    conn.close()
-
-    return lignes
-
-
-
-
-
-
-# connecte à la B
-# DD et renvoie les lignes de la table personne dont le prénom commence par la lettre donnée
-def selection_personnes_lettre(lettre):
-    conn = connection_bdd()
-    cur = conn.cursor()
-
-    cur.execute("SELECT nom, prenom, role FROM personnes WHERE prenom LIKE ?", (lettre + "%",))
-
+    cur.execute("INSERT INTO Commande(Date_livraison, Ref_produit, Ref_option) VALUES(" + str(datetime.datetime.now()) + "," + str(y) + "," + str(z) + ")")
+    cur.execute("INSERT INTO commande_contient_option VALUES ref_commande=x, ref_option=y")
     lignes = cur.fetchall()
 
     conn.close()
@@ -96,24 +47,133 @@ def selection_personnes_lettre(lettre):
     return lignes
 
 
-# connecte à la BDD et insère une nouvelle ligne avec les valeurs données
-def insertion_personne(nom, prenom, role):
-    try:
-        conn = connection_bdd()
-        cur = conn.cursor()
+# Lancer une nouvelle commande (ajout d'une commande dans la table Commande
+def afficher_cmds_en_cours():
+    conn = connection_bdd()
+    cur = conn.cursor()
 
-        cur.execute("INSERT INTO personnes('nom', 'prenom', 'role') VALUES (?,?,?)", (nom, prenom, role))
+    cur.execute("SELECT ref_cmd, date_cmd, etat_cmd, ref_produit FROM Commande WHERE Etat_Cmd=0")
 
-        conn.commit()
+    conn.close()
 
-        conn.close()
+    return lignes
 
-        return True
+#Valider une réception de la commande x
+def valider_reception(ref):
 
-    except lite.Error:
+    conn = connection_bdd()
+    cur = conn.cursor()
 
-        return False
+    cur.execute("UPDATE commande SET etat_cmd = 1 WHERE ref_commande = " + str(ref))
+    lignes = cur.fetchall()
 
+    conn.close()
+
+    return
+
+
+
+
+##################################  AGILEAN  #####################################
+
+#Lancer ordre de fabrication
+def lancer_ordref(ref):
+
+    conn = connection_bdd()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE commande SET Date_OF = " + str(datetime.datetime.now()) + " WHERE ref_commande = " + str(ref))
+
+    conn.close()
+
+    return
+
+#Lancer OA
+def lancer_ordrea(ref):
+
+    conn = connection_bdd()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE commande SET Date_OA = " + str(datetime.datetime.now()) + " WHERE ref_commande = " + str(ref))
+
+    conn.close()
+
+    return
+
+#Ajouter une demande de kit correspondant à l'OA lancé
+def demande_kit(ref, id, quant):
+
+    conn = connection_bdd()
+    cur = conn.cursor()
+
+    cur.execute("INSERT INTO Demander_kits(ref_cmd, id_kit, quantite) VALUES (?,?,?)", (ref, id, quant))
+
+    conn.close()
+
+    return
+
+#Accuser réception des kits pour la commande y
+def ajputer_demande_kit(ref):
+
+    conn = connection_bdd()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE commande SET Date_recpKit = " + str(datetime.datetime.now()) + " WHERE ref_commande = " + str(ref))
+    conn.close()
+
+    return
+
+#Ajouter un problème de qualité (avec date de détection, lieu, et description et réf de commande associée)
+def probleme_qualite(id, lieu, description, ref):
+
+    conn = connection_bdd()
+    cur = conn.cursor()
+
+    cur.execute("INSERT INTO Qualité(ref_qualite, date_detection, lieu, description, ref_commande) VALUES(?,?,?,?,?)", (id,str(datetime.datetime.now()),lieu,description,ref))
+
+    conn.close()
+
+    return
+
+#Ajouter dans la table commande la date du contrôle qualité x à la commande de référence y
+def ajouter_date_qualite(ref):
+
+    conn = connection_bdd()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE Commande SET Date_ctrl_quali= " + str(datetime.datetime.now()) + "WHERE ref_commande = " + str(ref))
+
+    conn.close()
+
+    return
+
+#Livrer la commande x au client (date automatique)
+def livrer_commande(ref):
+
+    conn = connection_bdd()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE Commande SET Date_livraison VALUES(" + str(datetime.datetime.now()) + ")")
+
+    conn.close()
+
+    return
+
+
+
+
+##################################  AGILOG  ######################################
+
+#Livrer les kits de la commande de référence x à Agilean (la commande va entrer l'instant de livraison automatiquement à la colonne date_liv_agilog)
+def livrer_kit():
+    conn = connection_bdd()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE Commande SET Date_liv_Agilog VALUES(" + str(datetime.datetime.now()) + ")")
+
+    conn.close()
+
+    return
 
 # ---------------------------------------
 # les différentes pages (fonctions VUES)
@@ -130,33 +190,15 @@ def index():
 def agilean():
     return render_template('agilean.html')
 
-@app.route('/prepa_commande')
-def prepa_commande():
-    return render_template('prepa_commande.html')
-
-@app.route('/passer_une_commande', methods = ['GET'])
-def passer_une_commande():
-    #if request.method == 'GET':
-     #   try:
-      #      pass
-       #     x=str(datetime.datetime.now()) #'Date_livraison'
-        #    y=str(request.form['option1'])+str(request.form['option1']) #'Ref_produit'
-         #   z=request.form['type'] #'Ref_option'
-          #  lancer_commande(x, y, z)
-        #except ValueError:
-        #    print("Oops!  That was no valid number.  Try again...")
-
-    return render_template('passer_une_commande.html')
-
-
-@app.route('/reception_commande')
-def reception_commande():
-    return render_template('reception_commande.html')
-
 
 @app.route('/agilog')
 def agilog():
     return render_template('agilog.html')
+
+
+@app.route('/ajout_tache')
+def ajout_tache():
+    return render_template('ajout_tache.html')
 
 
 @app.route('/client')
@@ -167,6 +209,18 @@ def client():
 @app.route('/commandes_en_cours')
 def commandes_en_cours():
     return render_template('commandes_en_cours.html')
+
+
+@app.route('/cmd_urgente')
+def cmd_urgente():
+    return render_template('cmd_urgente.html')
+
+
+@app.route('/insert')
+def insert():
+    # if request.method == 'POST':
+    #    pass
+    return render_template('Insert.html')
 
 
 @app.route('/lancer_oa')
@@ -189,35 +243,39 @@ def livraison_agilean():
     return render_template('livraison_agilean.html')
 
 
+@app.route('/prepa_commande')
+def prepa_commande():
+    return render_template('prepa_commande.html')
+
+
+@app.route('/passer_une_commande', methods=['GET'])
+def passer_une_commande():
+    # if request.method == 'GET':
+    #   try:
+    #      pass
+    #     x=str(datetime.datetime.now()) #'Date_livraison'
+    #    y=str(request.form['option1'])+str(request.form['option1']) #'Ref_produit'
+    #   z=request.form['type'] #'Ref_option'
+    #  lancer_commande(x, y, z)
+    # except ValueError:
+    #    print("Oops!  That was no valid number.  Try again...")
+
+    return render_template('passer_une_commande.html')
+
+
 @app.route('/qualite')
 def qualite():
     return render_template('qualite.html')
 
 
+@app.route('/reception_commande')
+def reception_commande():
+    return render_template('reception_commande.html')
+
+
 @app.route('/reception_composants')
 def reception_composants():
     return render_template('reception_composants.html')
-
-@app.route('/cmd_urgente')
-def cmd_urgente():
-    return render_template('cmd_urgente.html')
-
-
-
-
-
-# php
-
-@app.route('/insert')
-def insert():
-    # if request.method == 'POST':
-    #    pass
-    return render_template('Insert.html')
-
-
-@app.route('/ajout_tache')
-def ajout_tache():
-    return render_template('ajout_tache.html')
 
 
 @app.route('/tache_php')
@@ -346,7 +404,7 @@ def insertion_bdd_personne():
 
         if (request.form['nom'] != "" and request.form['prenom'] != "" and request.form.get('role',
                                                                                             type=int) > 0 and request.form.get(
-                'role', type=int) < 4):
+            'role', type=int) < 4):
 
             res = insertion_personne(request.form['nom'], request.form['prenom'], request.form.get('role', type=int))
 

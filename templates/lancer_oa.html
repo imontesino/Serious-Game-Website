@@ -28,33 +28,25 @@
 </div>
 </br>
 </br>
-<h4> Choisir l'ordre de fabrication dans la liste suivante: </h4>
+<h4> Rentrer la référence de la commande pour lancer l'ordre d'achat </h4>
 
 
-<form action="/fichier.py" method="get">
-
-<input list="type_voiture">
+<form action="/fichier.py" method="post">
 
 
-<datalist id="type_voiture">
-  <option value="Chassis long fermé (CLF)">
-  <option value="Chassis long ouvert (CLO)">
-  <option value="Chassis court fermé (CCF)">
-  <option value="Chassis court ouvert (CCO)">
- 
-</datalist>
-
-<h5> Choisissez vos options:</h5>
 
 
-  <input type="checkbox" name="option1" value="antenne"> Antenne<br>
-  <input type="checkbox" name="option2" value="crochet d'atellage"> Crochet d'attelage 
+
+
+Référence commande<input type="text" name="oa"> <br>
+  
+  
 </br>
 <input type="submit">
 </form>
 
 
-<br/><br/><a href="agilean.html"> Retour chez Agilean<a/>
+<br/><br/><a href="{{url_for('agilean')}}"> Retour chez Agilean<a/>
 
 </body>
 <div class="navbar navbar-inverse navbar-fixed-top">

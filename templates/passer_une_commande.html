@@ -27,12 +27,12 @@
 <h1>Bienvenue dans l'interface client</h1>
 
 <h4> Choisissez le véhicule que vous souhaiter</h4>
-<form action="/exemples.py" method="GET">
+<form action="/exemples.py" method="post">
 
 <input list="type_voiture">
 
 
-<datalist id="type_voiture" name="type">
+<datalist id="type_voiture">
   <option value="Chassis long fermé (CLF)">
   <option value="Chassis long ouvert (CLO)">
   <option value="Chassis court fermé (CCF)">
@@ -43,8 +43,9 @@
 <h5> Choisissez vos options:</h5>
 
 
-  <input type="checkbox" name="option1" value="True"> Antenne<br>
-  <input type="checkbox" name="option2" value="True"> Crochet d'attelage
+  <input type="checkbox" name="option1" value="1"> Antenne<br>
+  <input type="checkbox" name="option2" value="1"> Crochet d'attelage <br>
+  <input type="checkbox" name="option3" value="1"> Remorque
 </br>
 <input type="submit">
 </form>

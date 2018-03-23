@@ -8,12 +8,14 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <![endif]-->
     <title>Agilog</title>
- 
+ 	<link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="style.css") }}'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     
     <link href="static/assets/css/bootstrap.css" rel="stylesheet" />
     
     <link href="static/assets/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
     <link href="static/assets/css/style.css" rel="stylesheet" />
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -30,10 +32,27 @@
 </br>
 <h4> Voici la liste des commandes en cours </h4>
 
+<div class='contenu'>
+	<div class="lp_table">
+		<div class="lp_entetes">
+			<div class="lp_entete">ref_commande</div>
+			<div class="lp_entete">date_commande</div>
+			<div class="lp_entete">ref_prod</div>
+			<div class="lp_entete">etat_commande</div>
+		</div>
+		{% for commande in commandes %}
+			<div class="lp_ligne">
+				<div class="lp_cellule">{{ commande['ref_commande'] }}</div>
+				<div class="lp_cellule">{{ commande['Date_commande'] }}</div>
+				<div class="lp_cellule">{{ commande['Ref_prod'] }}</div>
+				<div class="lp_cellule">{{ commande['Etat_cmd'] }}</div>
+			</div>
+		{% endfor %}
+	</div>
 
 
 
-<br/><br/><a href="agilog.html"> Retour chez Agilog<a/>
+<br/><br/><a href="{{url_for('agilog')}}"> Retour chez Agilog<a/>
 
 </body>
 <div class="navbar navbar-inverse navbar-fixed-top">

@@ -1,4 +1,4 @@
-<html>
+﻿<html>
 <head>
    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -34,32 +34,38 @@ Veuillez trouver ci-dessous la liste des commandes
            
             <div class="row main-low-margin text-center">
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter left and move 100px, wait 0.8s">
-                  <a href={{ url_for('lancer_of') }}> <i class="fa fa-plus fa-5x color-blue"></i></a>
-                    <h3><a href={{ url_for('lancer_oa') }}>Lancer OF</a></h3>
+                  <a href="{{url_for('lancer_of')}}"> <i class="fa fa-cogs fa-5x color-blue"></i></a>
+                    <h3><a href="{{url_for('lancer_of')}}">Lancer un ordre de fabrication</a></h3>
                 </div>               
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter bottom and move 100px, wait 0.8s">
-                    <a href={{ url_for('lancer_oa') }}>><i class="fa fa-plus fa-5x color-black"></i></a>
-                    <h3><a href={{ url_for('lancer_oa') }}>Lancer OA</a></h3>
+                    <a href="{{url_for('lancer_oa')}}"><i class="fa fa-calendar fa-5x color-black"></i></a>
+                    <h3><a href="{{url_for('lancer_oa')}}">Lancer un ordre d'achat</a></h3>
                 </div>
                 <div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
 
-                    <a href={{ url_for('reception_composants') }}><i class="fa fa-plus fa-5x color-light-blue"></i></a>
-                    <h3><a href={{ url_for('reception_composants') }}> Réception composants </a></h3>
+                    <a href="{{url_for('reception_composants')}}"><i class="fa fa-print fa-5x color-light-blue"></i></a>
+                    <h3><a href="{{url_for('reception_composants')}}"> Réception composants </a></h3>
                 </div>
 
 <div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
-                    <a href={{ url_for('qualite') }}><i class="fa fa-plus fa-5x color-light-blue"></i></a>
-                    <h3><a href={{ url_for('qualite') }}> Déclarer un problème qualité </a></h3>
+                    <a href="{{url_for('qualite')}}"><i class="glyphicon glyphicon-remove-circle fa-5x color-red"></i></a>
+                    <h3><a href="{{url_for('qualite')}}"> Déclarer un problème qualité </a></h3>
                 </div>
 
 <div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
-                    <a href={{ url_for('livraison') }}><i class="fa fa-plus fa-5x color-light-blue"></i></a>
-                    <h3><a href={{ url_for('livraison') }}> Livrer client </a></h3>
+                    <a href="{{url_for('livraison')}}"><i class="fa fa-credit-card fa-5x color-blue-light"></i></a>
+                    <h3><a href="{{url_for('livraison')}}"> Livrer client </a></h3>
                 </div>
+
+<div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.8s">
+                    <a href="{{url_for('cmd_urgente')}}"><i class="glyphicon glyphicon-wrench fa-5x color-red"></i></a>
+                    <h3><a href="{{url_for('cmd_urgente')}}"> Lancer une commande urgente </a></h3>
+                </div>
+
 		</div>
 
 
-<br/><br/><a href={{ url_for('index') }}> Retour a la page principale<a/>
+<br/><br/><a href="{{url_for('index')}}"> Retour a la page principale<a/>
 
 </body>
 <div class="navbar navbar-inverse navbar-fixed-top">
