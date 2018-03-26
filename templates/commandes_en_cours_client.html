@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
 <head>
    <meta charset="utf-8">
@@ -7,13 +8,18 @@
     <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <![endif]-->
-    <title>Agilean</title>
- 
+    <title>Agilog</title>
+    
+    <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="style.css") }}'>
+    
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     
     <link href="static/assets/css/bootstrap.css" rel="stylesheet" />
     
-    <link href="static/assets/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <link href="static/assets/css/font-awesome.min.css" rel="stylesheet" /> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
     <link href="static/assets/css/style.css" rel="stylesheet" />
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -22,31 +28,39 @@
 <body>
 <div class="row main-top-margin text-center">
 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1" data-scrollreveal="enter top and move 100px, wait 0.5s">
-<h1>Bienvenue dans l'interface de gestion des ordres d'achat</h1>
+<h1>Bienvenue dans l'interface de consultation des commandes en cours</h1>
 
 </div>
 </div>
 </br>
 </br>
-<h4> Rentrer la référence de la commande pour lancer l'ordre d'achat </h4>
-
-
-<form action="/fichier.py" method="post">
+<h4> Voici la liste des commandes en cours </h4>
 
 
 
+<div class='contenu'>
+	<div class="lp_table">
+		<div class="lp_entetes">
+			<div class="lp_entete">Reference commande</div>
+			<div class="lp_entete">Date commande</div>
+			<div class="lp_entete">Reference produit</div>
+                        <div class="lp_entete">Options</div>
+			<div class="lp_entete">Etat commande</div>
+		</div>
+		{% for commande in commandes %}
+			<div class="lp_ligne">
+				<div class="lp_cellule">{{ commande['ref_commande'] }}</div>
+				<div class="lp_cellule">{{ commande['Date_commande'] }}</div>
+				<div class="lp_cellule">{{ commande['Ref_prod'] }}</div>
+                                <div class="lp_cellule">{{ commande['ref_opt'] }}</div>
+				<div class="lp_cellule">{{ commande['Etat_cmd'] }}</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
 
 
-
-Référence commande<input type="text" name="oa"> <br>
-  
-  
-</br>
-<input type="submit">
-</form>
-
-
-<br/><br/><a href="{{url_for('agilean')}}"> Retour chez Agilean<a/>
+<br/><br/><a href="{{url_for('client')}}"> Retour chez Client<a/>
 
 </body>
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -57,6 +71,6 @@ Référence commande<input type="text" name="oa"> <br>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Serious Game - Interface Agilean</a>
+                <a class="navbar-brand" href="#">Serious Game - Interface Client</a>
             </div>
 </html>

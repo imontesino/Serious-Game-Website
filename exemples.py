@@ -20,34 +20,139 @@ def render_page(name):
 
 # connecte à la BDD, affecte le mode dictionnaire aux résultats de requêtes et renvoie un curseur
 def connection_bdd():
-    con = lite.connect('BD serious game.db')
+    con = lite.connect('BD_serious_game.db')
     con.row_factory = lite.Row
 
     return con
 
 reftotal = 0
 
+     
+def selection_commandes(etat_cmd):
+	
+	conn = connection_bdd()
+	cur = conn.cursor()
+	
+	cur.execute("SELECT ref_commande, Date_commande, Ref_prod, ref_opt, Etat_cmd FROM Commande WHERE Etat_cmd LIKE ?", (etat_cmd,))
+	
+	lignes = cur.fetchall()
+	
+	conn.close()
+	
+	return lignes
+	
+def selection_commandes_liv(etat_cmd):
+	
+	conn = connection_bdd()
+	cur = conn.cursor()
+	
+	cur.execute("SELECT ref_commande, Date_OA, Ref_prod, ref_opt, Etat_cmd FROM Commande WHERE Etat_cmd LIKE ? ORDER BY Date_commande ASC", (etat_cmd,))
+	
+	lignes = cur.fetchall()
+	
+	conn.close()
+	
+	return lignes
+
+
+def selection_commandes_liv_client():
+	
+	conn = connection_bdd()
+	cur = conn.cursor()
+	
+	cur.execute("SELECT ref_commande, Date_commande, Date_livraison, Ref_prod, ref_opt, Etat_cmd FROM Commande WHERE Etat_cmd LIKE 'En attente de validation client' OR Etat_cmd LIKE 'Validée par le client' ORDER BY Date_commande ASC")
+	
+	lignes = cur.fetchall()
+	
+	conn.close()
+	
+	return lignes
+
+
+def selection_commandes_production():
+	
+	conn = connection_bdd()
+	cur = conn.cursor()
+	
+	cur.execute("SELECT ref_commande, Date_commande, Date_OF, Ref_prod, ref_opt, Etat_cmd FROM Commande WHERE Etat_cmd LIKE 'En cours de fabrication' OR Etat_cmd LIKE 'Prête pour lancement OF' ORDER BY Date_commande ASC")
+	
+	lignes = cur.fetchall()
+	
+	conn.close()
+	
+	return lignes
+
+def selection_pb_qualite():
+	
+	conn = connection_bdd()
+	cur = conn.cursor()
+	
+	cur.execute("SELECT ref_qualite, Ref_commande, Date_detection, Lieu, Description FROM Qualité")
+	
+	lignes = cur.fetchall()
+	
+	conn.close()
+	
+	return lignes
+	
+
 
 ##################################  Client  ########################################
 
 
-# Afficher toutes les commandes en cours
-def lancer_commande(x, y, z):
-    global reftotal
 
-    conn = connection_bdd()
-    cur = conn.cursor()
+def modele_vehicule(x):		
+	
+	 
+	if x == 1:
+		return 'CLF'
+	elif x == 2:
+		return 'CLO'
+	elif x == 3:
+		return 'CCF'
+	elif x == 4 :
+		return 'CCO'
 
-    cur.execute("INSERT INTO Commande(Date_livraison, Ref_produit, Ref_option) VALUES(" + str(datetime.datetime.now()) + "," + str(y) + "," + str(z) + ")")
-    cur.execute("INSERT INTO commande_contient_option VALUES ref_commande=x, ref_option=y")
-    lignes = cur.fetchall()
-
-    conn.close()
-
-    return lignes
-
+def option_vehicule(y):		
+	
+	 
+	if y == 1:
+		return 'Antenne'
+	elif y == 2:
+		return 'Crochet d''attelage'
+	elif y == 3:
+		return 'Attache accesoire'
+	elif y == 4 :
+		return 'Antenne-Crochet d''attelage'
+	elif y == 5 :
+		return 'Antenne-Attache accesoire'
+	elif y == 6 :
+		return 'Crochet d''attelage-Attache accesoire'
+	elif y == 7 :
+		return 'Antenne-Crochet d''attelage-Attache accesoire'
+	
 
 # Lancer une nouvelle commande (ajout d'une commande dans la table Commande
+def lancer_commande(x, choix, option,etat):
+	try:
+		conn = connection_bdd()
+		cur = conn.cursor()
+		
+		x=datetime.datetime.now()
+		cur.execute("INSERT INTO Commande('Date_commande', 'Ref_prod', 'ref_opt', 'Etat_cmd') VALUES(?,?,?,?)", (x,modele_vehicule(choix),option_vehicule(option),etat))
+		
+		conn.commit()
+		
+		conn.close()
+		
+		return True
+		
+	except lite.Error:
+		
+		return False
+ 
+
+# Afficher toutes les commandes en cours
 def afficher_cmds_en_cours():
     conn = connection_bdd()
     cur = conn.cursor()
@@ -59,121 +164,125 @@ def afficher_cmds_en_cours():
     return lignes
 
 #Valider une réception de la commande x
-def valider_reception(ref):
+def valider_reception(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
-
-    cur.execute("UPDATE commande SET etat_cmd = 1 WHERE ref_commande = " + str(ref))
-    lignes = cur.fetchall()
-
-    conn.close()
-
-    return
+    cur.execute("UPDATE Commande SET Etat_cmd = 'Validée par le client' WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
 
 
-
-
-##################################  AGILEAN  #####################################
-
-#Lancer ordre de fabrication
-def lancer_ordref(ref):
-
-    conn = connection_bdd()
-    cur = conn.cursor()
-
-    cur.execute("UPDATE commande SET Date_OF = " + str(datetime.datetime.now()) + " WHERE ref_commande = " + str(ref))
-
-    conn.close()
-
-    return
+##################################  AGILEAN  ########Va#############################
 
 #Lancer OA
-def lancer_ordrea(ref):
+def commander_composants(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
+    cur.execute("UPDATE Commande SET Etat_cmd = 'En attente de composants', Date_OA=time('now') WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
 
-    cur.execute("UPDATE commande SET Date_OA = " + str(datetime.datetime.now()) + " WHERE ref_commande = " + str(ref))
-
-    conn.close()
-
-    return
-
-#Ajouter une demande de kit correspondant à l'OA lancé
-def demande_kit(ref, id, quant):
+#Validation des composants reçus par AgiLog
+def valider_reception_comp(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
+    cur.execute("UPDATE Commande SET Etat_cmd = 'Prête pour lancement OF', Date_recpKit=time('now') WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
 
-    cur.execute("INSERT INTO Demander_kits(ref_cmd, id_kit, quantite) VALUES (?,?,?)", (ref, id, quant))
-
-    conn.close()
-
-    return
-
-#Accuser réception des kits pour la commande y
-def ajputer_demande_kit(ref):
+#Lancer ordre de fabrication
+def lancement_of(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
+    cur.execute("UPDATE Commande SET Etat_cmd = 'En cours de fabrication', Date_OF=time('now') WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
 
-    cur.execute("UPDATE commande SET Date_recpKit = " + str(datetime.datetime.now()) + " WHERE ref_commande = " + str(ref))
-    conn.close()
-
-    return
-
-#Ajouter un problème de qualité (avec date de détection, lieu, et description et réf de commande associée)
-def probleme_qualite(id, lieu, description, ref):
+#Ajouter un produit fini au stock
+def ajouter_PF(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
-
-    cur.execute("INSERT INTO Qualité(ref_qualite, date_detection, lieu, description, ref_commande) VALUES(?,?,?,?,?)", (id,str(datetime.datetime.now()),lieu,description,ref))
-
-    conn.close()
-
-    return
-
-#Ajouter dans la table commande la date du contrôle qualité x à la commande de référence y
-def ajouter_date_qualite(ref):
+    cur.execute("UPDATE Commande SET Etat_cmd = 'En stock' WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
+    
+#Fonction pour livrer le client
+def livraison_client(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
+    cur.execute("UPDATE Commande SET Etat_cmd = 'En attente de validation client', Date_livraison=time('now') WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
 
-    cur.execute("UPDATE Commande SET Date_ctrl_quali= " + str(datetime.datetime.now()) + "WHERE ref_commande = " + str(ref))
 
-    conn.close()
 
-    return
+#Déclarer un problème qualité
+def declarer_pb_qualite(ref, lieu, description):
+	try:
+		conn = connection_bdd()
+		cur = conn.cursor()
+		
+	
+		cur.execute("INSERT INTO Qualité(Date_detection, Lieu, Description, Ref_commande) VALUES(?,?,?,?)", (str(datetime.datetime.now()),lieu,description,ref))
+		cur.execute("UPDATE Commande SET Etat_cmd = 'Problème qualité' WHERE ref_commande ="+ref)
+		conn.commit()
+		
+		conn.close()
+		
+		return True
+		
+	except lite.Error:
+		
+		return False
 
-#Livrer la commande x au client (date automatique)
-def livrer_commande(ref):
+def remettre_stock_pf(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
-
-    cur.execute("UPDATE Commande SET Date_livraison VALUES(" + str(datetime.datetime.now()) + ")")
-
-    conn.close()
-
-    return
+    cur.execute("UPDATE Commande SET Etat_cmd = 'En stock' WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
 
 
+ 
 
 
 ##################################  AGILOG  ######################################
 
-#Livrer les kits de la commande de référence x à Agilean (la commande va entrer l'instant de livraison automatiquement à la colonne date_liv_agilog)
-def livrer_kit():
+#Fonction pour lancer la préparation des commandes
+def lancer_prepa(ref_cmd):
+
     conn = connection_bdd()
     cur = conn.cursor()
+    cur.execute("UPDATE Commande SET Etat_cmd = 'En cours de préparation de kits' WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
 
-    cur.execute("UPDATE Commande SET Date_liv_Agilog VALUES(" + str(datetime.datetime.now()) + ")")
+#Fonction pour enregistrer les kits réalisés 
+def finaliser_prepa(ref_cmd):
 
-    conn.close()
+    conn = connection_bdd()
+    cur = conn.cursor()
+    cur.execute("UPDATE Commande SET Etat_cmd = 'Kits prêts' WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
+    
+#Fonction pour livrer AgiLean   
+def livrer_kits(ref_cmd):
 
-    return
+    conn = connection_bdd()
+    cur = conn.cursor()
+    cur.execute("UPDATE Commande SET Etat_cmd = 'Kits livrés à AgiLean', Date_liv_AgiLog=time('now') WHERE ref_commande ="+ref_cmd)
+    conn.commit()
+    return 1
+    
+
 
 # ---------------------------------------
 # les différentes pages (fonctions VUES)
@@ -196,266 +305,308 @@ def agilog():
     return render_template('agilog.html')
 
 
-@app.route('/ajout_tache')
-def ajout_tache():
-    return render_template('ajout_tache.html')
-
 
 @app.route('/client')
 def client():
     return render_template('client.html')
 
 
-@app.route('/commandes_en_cours')
-def commandes_en_cours():
-    return render_template('commandes_en_cours.html')
-
 
 @app.route('/cmd_urgente')
 def cmd_urgente():
     return render_template('cmd_urgente.html')
 
+	
+@app.route('/commandes_en_cours_client', methods=['GET'])
+def commandes_en_cours_client():
+	
+	lignes = selection_commandes("%")
+	
+	return render_template('commandes_en_cours_client.html', commandes = lignes)
 
-@app.route('/insert')
-def insert():
-    # if request.method == 'POST':
-    #    pass
-    return render_template('Insert.html')
-
-
-@app.route('/lancer_oa')
-def lancer_oa():
-    return render_template('lancer_oa.html')
-
-
-@app.route('/lancer_of')
-def lancer_of():
-    return render_template('lancer_of.html')
-
-
-@app.route('/livraison')
-def livraison():
-    return render_template('livraison.html')
-
-
-@app.route('/livraison_agilean')
-def livraison_agilean():
-    return render_template('livraison_agilean.html')
-
-
-@app.route('/prepa_commande')
-def prepa_commande():
-    return render_template('prepa_commande.html')
-
-
-@app.route('/passer_une_commande', methods=['GET'])
+@app.route('/passer_une_commande', methods=['GET','POST'])
 def passer_une_commande():
-    # if request.method == 'GET':
-    #   try:
-    #      pass
-    #     x=str(datetime.datetime.now()) #'Date_livraison'
-    #    y=str(request.form['option1'])+str(request.form['option1']) #'Ref_produit'
-    #   z=request.form['type'] #'Ref_option'
-    #  lancer_commande(x, y, z)
-    # except ValueError:
-    #    print("Oops!  That was no valid number.  Try again...")
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form.get('choix', type=int) > 0 and request.form.get('choix', type=int) < 5 and request.form.get('choix_opt', type=int) > 0 and request.form.get('choix_opt', type=int) < 7):
+			
+			res = lancer_commande(datetime.datetime.now(),request.form.get('choix', type=int),request.form.get('choix_opt', type=int),"Envoyée à AgiLean")
+			
+			if (res):
+			
+				return redirect(url_for('commandes_en_cours_client'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de l'insertion dans la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('passer_une_commande.html', msg = erreur, choix = request.form.get('role', 0, type=int))
+	
 
-    return render_template('passer_une_commande.html')
-
-
-@app.route('/qualite')
-def qualite():
-    return render_template('qualite.html')
-
-
-@app.route('/reception_commande')
+@app.route('/reception_commande', methods=['GET','POST'])
 def reception_commande():
-    return render_template('reception_commande.html')
+	
+	lignes = selection_commandes_liv_client()
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd'] != ""):
+			
+			res=valider_reception(request.form['ref_cmd'])
+			
+			if (res):
+			
+				return redirect(url_for('reception_commande'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de la modification de la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('reception_commande.html',commandes = lignes, msg = erreur, ref_cmd = request.form.get('ref_cmd', ''))
 
+@app.route('/lancer_oa', methods=['GET','POST'])
+def lancer_oa():
+	
+	lignes = selection_commandes_liv("Envoyée à AgiLean")
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd'] != ""):
+			
+			res=commander_composants(request.form['ref_cmd'])
+			
+			if (res):
+			
+				return redirect(url_for('lancer_oa'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de la modification de la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('lancer_oa.html',commandes = lignes, msg = erreur, ref_cmd = request.form.get('ref_cmd', ''))
+	
+@app.route('/prepa_commande', methods=['GET','POST'])
+def prepa_commande():
+	
+	lignes = selection_commandes_liv("En attente de composants")
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd'] != ""):
+			
+			res=lancer_prepa(request.form['ref_cmd'])
+			
+			if (res):
+			
+				return redirect(url_for('prepa_commande'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de la modification de la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('prepa_commande.html',commandes = lignes, msg = erreur, ref_cmd = request.form.get('ref_cmd', ''))
 
-@app.route('/reception_composants')
+@app.route('/commandes_en_cours', methods=['GET','POST'])
+def commandes_en_cours():
+	
+	lignes = selection_commandes("En cours de préparation de kits")
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd'] != ""):
+			
+			res=finaliser_prepa(request.form['ref_cmd'])
+			
+			if (res):
+			
+				return redirect(url_for('commandes_en_cours'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de la modification de la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('commandes_en_cours.html',commandes = lignes, msg = erreur, ref_cmd = request.form.get('ref_cmd', ''))
+	
+
+@app.route('/livraison_agilean', methods=['GET','POST'])
+def livraison_agilean():
+	lignes = selection_commandes_liv("Kits prêts")
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd'] != ""):
+			
+			res=livrer_kits(request.form['ref_cmd'])
+			
+			if (res):
+			
+				return redirect(url_for('livraison_agilean'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de la modification de la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('livraison_agilean.html',commandes = lignes, msg = erreur, ref_cmd = request.form.get('ref_cmd', ''))
+
+@app.route('/reception_composants', methods=['GET','POST'])
 def reception_composants():
-    return render_template('reception_composants.html')
+	lignes = selection_commandes_liv("Kits livrés à AgiLean")
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd'] != ""):
+			
+			res=valider_reception_comp(request.form['ref_cmd'])
+			
+			if (res):
+			
+				return redirect(url_for('reception_composants'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de la modification de la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('reception_composants.html',commandes = lignes, msg = erreur, ref_cmd = request.form.get('ref_cmd', ''))  
+    
+@app.route('/lancer_of', methods=['GET','POST'])
+def lancer_of():
+	lignes = selection_commandes_production()
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd_of'] != ""):
+			
+			res=lancement_of(request.form['ref_cmd_of'])
+			
+			if (res):
+			
+				return redirect(url_for('lancer_of'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de la modification de la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('lancer_of.html',commandes = lignes, msg = erreur, ref_cmd = request.form.get('ref_cmd_of', '')) 
+    
+@app.route('/ajouter_pf', methods=['GET','POST'])
+def ajouter_pf():
+	lignes = selection_commandes_production()
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd'] != ""):
+			
+			res=ajouter_PF(request.form['ref_cmd'])
+			
+			if (res):
+			
+				return redirect(url_for('ajouter_pf'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de la modification de la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('lancer_of.html',commandes = lignes, msg = erreur, ref_cmd = request.form.get('ref_cmd', '')) 
+    
+@app.route('/livrer_client', methods=['GET','POST'])
+def livrer_client():
+	lignes = selection_commandes("En stock")
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd'] != ""):
+			
+			res=livraison_client(request.form['ref_cmd'])
+			
+			if (res):
+			
+				return redirect(url_for('livrer_client'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de la modification de la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('livrer_client.html',commandes = lignes, msg = erreur, ref_cmd = request.form.get('ref_cmd', '')) 
+    
+    
+@app.route('/qualite', methods=['GET', 'POST'])
+def qualite():
+	lignes=selection_pb_qualite()
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref_cmd'] != "" and request.form['lieu'] != "" and request.form['description'] != "" ):
+			
+			res = declarer_pb_qualite(request.form['ref_cmd'],request.form['lieu'],request.form['description'])
+			
+			if (res):
+			
+				return redirect(url_for('livrer_client'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de l'insertion dans la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('qualite.html', msg = erreur,commandes = lignes, ref_cmd = request.form.get('ref_cmd', ''), lieu = request.form.get('lieu', ''), description = request.form.get('description', ''))
+
+#Route pour réinjecter les commandes dont les problèmes qualité ont été réglés
+@app.route('/injecter_stock', methods=['GET', 'POST'])
+def injecter_stock():
+	erreur = ""
+	if request.method == 'POST':
+		
+		if (request.form['ref'] != ""):
+			
+			res = remettre_stock_pf(request.form['ref'])
+			
+			if (res):
+			
+				return redirect(url_for('livrer_client'))
+				
+			else:
+				erreur = "Une erreur a été détectée lors de l'insertion dans la base de données. Veuillez réessayer ou contacter l'administrateur du site."
+		else:
+			erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
+	
+	# on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
+	
+	return render_template('qualite.html', msg = erreur, ref = request.form.get('ref', ''))
 
 
-@app.route('/tache_php')
-def tache():
-    return render_template('tache.php')
-
-
-@app.route('/contact_php')
-def contact():
-    return render_template('contact.php')
-
-
-# une page avec du texte statique
-
-
-@app.route('/hello')
-def hello():
-    contenu = ""
-    contenu += retour_index()
-    contenu += "Hello, World !"
-
-    return contenu
-
-
-# une page avec du texte dynamique déterminé par l'URL
-@app.route('/hello_url/<prenom>')
-def hello_url_prenom(prenom):
-    contenu = ""
-    contenu += retour_index()
-    contenu += "Hello, " + prenom + " !"
-
-    return contenu
-
-
-# une page avec un entier dynamique déterminé par l'URL
-@app.route('/hello_url_entier/<int:valeur>')
-def hello_url_entier(valeur):
-    contenu = ""
-    contenu += retour_index()
-    contenu += "Hello, n * 2 = " + str(valeur * 2) + " !"
-
-    return contenu
-
-
-# une page avec du texte dynamique envoyé par HTTP/GET
-@app.route('/hello_get', methods=['GET'])
-def hello_get_prenom():
-    contenu = ""
-    contenu += retour_index()
-    contenu += "Hello, " + request.args.get('prenom', 'une valeur par défaut') + " !"
-
-    return contenu
-
-    return contenu
-
-
-@app.route('/fichier_statique')
-def fichier_statique():
-    contenu = ""
-    contenu += retour_index()
-    contenu += "Hello, World !<br/>"
-    contenu += "<img src='" + url_for('static', filename='globe.png') + "'/>"
-
-    return contenu
-
-
-# une page avec du texte dynamique envoyé par HTTP/POST
-@app.route('/hello_post', methods=['POST'])
-def hello_post_prenom():
-    contenu = ""
-    contenu += retour_index()
-    contenu += "Hello, " + request.form['prenom'] + " !"
-
-    return contenu
-
-
-# un page qui combine affichage du formulaire et traitement
-@app.route('/formulaire_combine', methods=['GET', 'POST'])
-def formulaire_combine():
-    contenu = ""
-    contenu += retour_index()
-
-    erreur = ""
-    if request.method == 'POST':
-
-        if (request.form['prenom'][0].lower() == "a"):
-            contenu += "Hello, " + request.form['prenom'] + " !"
-            return contenu
-
-        else:
-            erreur = 'le prénom doit commencer par un "A"'
-
-    # on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
-
-    if (erreur != ""):
-        contenu += "<strong>Erreur : " + erreur + "</strong>"
-
-    contenu += formulaire_prenom("formulaire_combine", prenom="prénom en A")
-
-    return contenu
-
-
-@app.route('/template_html', methods=['GET'])
-def template_html():
-    return render_template('index.html')
-
-
-@app.route('/afficher_personnes', methods=['GET'])
-def affichage_bdd_personnes():
-    lignes = selection_personnes()
-
-    return render_template('affichage_personnes.html', personnes=lignes)
-
-
-@app.route('/afficher_personnes_a')
-def affichage_bdd_personnes_a():
-    lignes = selection_personnes_lettre("A")
-
-    return render_template('affichage_personnes_lettre.html', lettre="A", personnes=lignes)
-
-
-@app.route('/ajouter_personne', methods=['GET', 'POST'])
-def insertion_bdd_personne():
-    erreur = ""
-    if request.method == 'POST':
-
-        if (request.form['nom'] != "" and request.form['prenom'] != "" and request.form.get('role',
-                                                                                            type=int) > 0 and request.form.get(
-            'role', type=int) < 4):
-
-            res = insertion_personne(request.form['nom'], request.form['prenom'], request.form.get('role', type=int))
-
-            if (res):
-
-                return redirect(url_for('affichage_bdd_personnes'))
-
-            else:
-                erreur = "Une erreur a été détectée lors de l'insertion dans la base de données. Veuillez réessayer ou contacter l'administrateur du site."
-        else:
-            erreur = "Une erreur a été détectée dans le formulaire, merci de remplir tous les champs correctement."
-
-    # on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
-
-    return render_template('formulaire_personne.html', msg=erreur, nom=request.form.get('nom', ''),
-                           prenom=request.form.get('prenom', ''), role=request.form.get('role', 0, type=int))
-
-
-# Test tutoriel
-
-@app.route('/exo1', methods=['GET'])
-def exo1():
-    contenu = ""
-    contenu += retour_index()
-    contenu += "premier parametre: " + request.args.get('p1', 'une valeur par défaut') + "<br/><br/>"
-    contenu += "deuxieme parametre: " + request.args.get('p2', 'une valeur par défaut')
-
-
-@app.route('/formulaire_number', methods=['GET', 'POST'])
-def formulaire_number():
-    contenu = ""
-    contenu += retour_index()
-
-    erreur = ""
-    if request.method == 'POST':
-
-        try:
-            int(request.form['prenom'])
-            contenu += "The number is " + request.form['prenom'] + " !"
-            return contenu
-
-        except:
-            erreur = 'The input should be a number'
-
-    # on arrive ici si rien n'a été envoyé par POST, ou si la validation des données a échoué
-
-    if (erreur != ""):
-        contenu += "<strong>Erreur : " + erreur + "</strong>"
-
-    contenu += formulaire_prenom("formulaire_number", prenom="the input should be a number")
-    return contenu
 
 
 # ---------------------------------------
@@ -464,3 +615,151 @@ def formulaire_number():
 
 if __name__ == '__main__':
     app.run(debug=True)
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
