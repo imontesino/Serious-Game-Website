@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 <head>
    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -24,14 +24,43 @@
 <body>
 <div class="row main-top-margin text-center">
 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1" data-scrollreveal="enter top and move 100px, wait 0.5s">
-<h1>Bienvenue dans l'interface client</h1>
+<h1>Bienvenue dans l'interface de reception de commandes</h1>
 
-<p> Rentrer la référence de la commande </p>
-<form action="/fichier.py">
-Référence commande:
-<input type="text" name="ref_commande_livraison">
+<h2> Voici la liste des commandes en attente de validation</h2>
+
+
+
+<div class='contenu'>
+	<div class="lp_table">
+		<div class="lp_entetes">
+			<div class="lp_entete">Reference commande</div>
+			<div class="lp_entete">Date commande</div>
+                        <div class="lp_entete">Date de livraison</div>
+			<div class="lp_entete">Reference produit</div>
+                        <div class="lp_entete">Options</div>
+			<div class="lp_entete">Etat commande</div>
+		</div>
+		{% for commande in commandes %}
+			<div class="lp_ligne">
+				<div class="lp_cellule">{{ commande['ref_commande'] }}</div>
+				<div class="lp_cellule">{{ commande['Date_commande'] }}</div>
+                                <div class="lp_cellule">{{ commande['Date_livraison'] }}</div>
+				<div class="lp_cellule">{{ commande['Ref_prod'] }}</div>
+                                <div class="lp_cellule">{{ commande['ref_opt'] }}</div>
+				<div class="lp_cellule">{{ commande['Etat_cmd'] }}</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
+
+
+<p> Entrez la reference de la commande a receptionner </p>
+
+{% if msg!="" %}<strong>{{ msg }}</strong><br/><br/>{% endif %}
+<form method='post' action='{{ url_for("reception_commande") }}'>
+<label for='ref_cmd'>Reference commande</label><input type='text'  name='ref_cmd' value='{{ ref_cmd }}'>
 <br>
-<input type="submit">
+<input type='submit' value='Accuser la reception'>
 </form>
 
 </div>
@@ -42,15 +71,16 @@ Référence commande:
 
 
 
-
-
-
-
 <br>
-<br/><br/><a href={{url_for('index')}}> Retour à la page principale<a/>
+<br/><br/>
+
+
+<a href={{url_for('client')}}> Retour a la page client<a/>
+
 
 </body>
 <div class="navbar navbar-inverse navbar-fixed-top">
+
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">

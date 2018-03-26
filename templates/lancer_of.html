@@ -1,4 +1,4 @@
-<html>
+﻿<html>
 <head>
    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -7,13 +7,15 @@
     <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <![endif]-->
-    <title>Agilean</title>
+    <title>Gestion de production</title>
  
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     
     <link href="static/assets/css/bootstrap.css" rel="stylesheet" />
     
     <link href="static/assets/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
     <link href="static/assets/css/style.css" rel="stylesheet" />
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -22,33 +24,65 @@
 <body>
 <div class="row main-top-margin text-center">
 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1" data-scrollreveal="enter top and move 100px, wait 0.5s">
-<h1>Bienvenue dans l'interface de gestion des ordres de fabrication</h1>
-<h4>
-Veuillez trouver ci-dessous la liste des commandes non traitées
- </h4>
+<h1>Bienvenue dans l'interface de gestion de production</h1>
+
+<h2> Voici la liste des commandes en cours de fabrication ou qui sont prêtes pour le lancement d'OF</h2>
+
+
+
+<div class='contenu'>
+	<div class="lp_table">
+		<div class="lp_entetes">
+			<div class="lp_entete">Reference commande</div>
+			<div class="lp_entete">Date commande</div>
+                        <div class="lp_entete">Date ordre de fabrication</div>
+			<div class="lp_entete">Reference produit</div>
+                        <div class="lp_entete">Options</div>
+			<div class="lp_entete">Etat commande</div>
+		</div>
+		{% for commande in commandes %}
+			<div class="lp_ligne">
+				<div class="lp_cellule">{{ commande['ref_commande'] }}</div>
+				<div class="lp_cellule">{{ commande['Date_commande'] }}</div>
+                                <div class="lp_cellule">{{ commande['Date_OF'] }}</div>
+				<div class="lp_cellule">{{ commande['Ref_prod'] }}</div>
+                                <div class="lp_cellule">{{ commande['ref_opt'] }}</div>
+				<div class="lp_cellule">{{ commande['Etat_cmd'] }}</div>
+			</div>
+		{% endfor %}
+	</div>
 </div>
-</div>
-</br>
-</br>
-<h4> Rentrer la référence de la commande pour lancer l'ordre de fabrication </h4>
 
 
-<form action="/fichier.py" method="post">
+<p> Entrez la référence de la commande pour laquelle vous voulez lancer un OF </p>
 
-
-
-
-
-
-Référence commande<input type="text" name="of"> <br>
-  
-  
-</br>
-<input type="submit">
+{% if msg!="" %}<strong>{{ msg }}</strong><br/><br/>{% endif %}
+<form method='post' action='{{ url_for("lancer_of") }}'>
+<label for='ref_cmd_of'>Reference commande</label><input type='text'  name='ref_cmd_of' value='{{ ref_cmd_of }}'>
+<br>
+<input type='submit' value='Lancer OF'>
 </form>
 
+<p> Entrez la reference de la commande que vous voulez ajouter au stock</p>
+{% if msg!="" %}<strong>{{ msg }}</strong><br/><br/>{% endif %}
+<form method='post' action='{{ url_for("ajouter_pf") }}'>
+<label for='ref_cmd'>Reference commande</label><input type='text'  name='ref_cmd' value='{{ ref_cmd }}'>
+<br>
+<input type='submit' value='Ajouter au stock de PF'>
+</form>
 
-<br/><br/><a href="{{url_for('agilean')}}"> Retour chez Agilean<a/>
+</div>
+</div>
+</br>
+</br>
+</br>
+
+
+
+
+
+<br>
+<br/><br/><a href={{url_for('agilean')}}> Retour a l'interface AgiLean<a/>
 
 </body>
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -59,6 +93,6 @@ Référence commande<input type="text" name="of"> <br>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Serious Game - Interface Agilean</a>
+                <a class="navbar-brand" href="#">Serious Game - Interface AgiLean</a>
             </div>
 </html>

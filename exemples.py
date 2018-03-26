@@ -46,7 +46,7 @@ def selection_commandes_liv(etat_cmd):
 	conn = connection_bdd()
 	cur = conn.cursor()
 	
-	cur.execute("SELECT ref_commande, Date_OA, Ref_prod, ref_opt, Etat_cmd FROM Commande WHERE Etat_cmd LIKE ? ORDER BY Date_commande ASC", (etat_cmd,))
+	cur.execute("SELECT ref_commande, Date_commande,Date_OA, Ref_prod, ref_opt, Etat_cmd FROM Commande WHERE Etat_cmd LIKE ? ORDER BY Date_commande ASC", (etat_cmd,))
 	
 	lignes = cur.fetchall()
 	
@@ -117,18 +117,20 @@ def option_vehicule(y):
 	
 	 
 	if y == 1:
-		return 'Antenne'
+		return 'Sans option'
 	elif y == 2:
-		return 'Crochet d''attelage'
+		return 'Antenne'
 	elif y == 3:
+		return 'Crochet d''attelage'
+	elif y == 4:
 		return 'Attache accesoire'
-	elif y == 4 :
-		return 'Antenne-Crochet d''attelage'
 	elif y == 5 :
-		return 'Antenne-Attache accesoire'
+		return 'Antenne-Crochet d''attelage'
 	elif y == 6 :
-		return 'Crochet d''attelage-Attache accesoire'
+		return 'Antenne-Attache accesoire'
 	elif y == 7 :
+		return 'Crochet d''attelage-Attache accesoire'
+	elif y == 8 :
 		return 'Antenne-Crochet d''attelage-Attache accesoire'
 	
 
@@ -138,7 +140,6 @@ def lancer_commande(x, choix, option,etat):
 		conn = connection_bdd()
 		cur = conn.cursor()
 		
-		x=datetime.datetime.now()
 		cur.execute("INSERT INTO Commande('Date_commande', 'Ref_prod', 'ref_opt', 'Etat_cmd') VALUES(?,?,?,?)", (x,modele_vehicule(choix),option_vehicule(option),etat))
 		
 		conn.commit()
@@ -170,6 +171,7 @@ def valider_reception(ref_cmd):
     cur = conn.cursor()
     cur.execute("UPDATE Commande SET Etat_cmd = 'Validée par le client' WHERE ref_commande ="+ref_cmd)
     conn.commit()
+    conn.close()
     return 1
 
 
@@ -180,8 +182,12 @@ def commander_composants(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
-    cur.execute("UPDATE Commande SET Etat_cmd = 'En attente de composants', Date_OA=time('now') WHERE ref_commande ="+ref_cmd)
+    x=datetime.datetime.now()
+    y=str(x)
+    cur.execute("UPDATE Commande  SET Date_OA=? WHERE ref_commande =?", (y[11:19], ref_cmd))
+    cur.execute("UPDATE Commande SET Etat_cmd = 'En attente de composants' WHERE ref_commande ="+ref_cmd)
     conn.commit()
+    conn.close()
     return 1
 
 #Validation des composants reçus par AgiLog
@@ -189,8 +195,11 @@ def valider_reception_comp(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
-    cur.execute("UPDATE Commande SET Etat_cmd = 'Prête pour lancement OF', Date_recpKit=time('now') WHERE ref_commande ="+ref_cmd)
+    x=datetime.datetime.now()
+    y=str(x)
+    cur.execute("UPDATE Commande SET Etat_cmd = 'Prête pour lancement OF', Date_recpKit=? WHERE ref_commande =?",(y[11:19],ref_cmd))
     conn.commit()
+    conn.close()
     return 1
 
 #Lancer ordre de fabrication
@@ -198,8 +207,11 @@ def lancement_of(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
-    cur.execute("UPDATE Commande SET Etat_cmd = 'En cours de fabrication', Date_OF=time('now') WHERE ref_commande ="+ref_cmd)
+    x=datetime.datetime.now()
+    y=str(x)
+    cur.execute("UPDATE Commande SET Etat_cmd = 'En cours de fabrication', Date_OF=? WHERE ref_commande =?",(y[11:19],ref_cmd))
     conn.commit()
+    conn.close()
     return 1
 
 #Ajouter un produit fini au stock
@@ -209,6 +221,7 @@ def ajouter_PF(ref_cmd):
     cur = conn.cursor()
     cur.execute("UPDATE Commande SET Etat_cmd = 'En stock' WHERE ref_commande ="+ref_cmd)
     conn.commit()
+    conn.close()
     return 1
     
 #Fonction pour livrer le client
@@ -216,8 +229,11 @@ def livraison_client(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
-    cur.execute("UPDATE Commande SET Etat_cmd = 'En attente de validation client', Date_livraison=time('now') WHERE ref_commande ="+ref_cmd)
+    x=datetime.datetime.now()
+    y=str(x)
+    cur.execute("UPDATE Commande SET Etat_cmd = 'En attente de validation client', Date_livraison=? WHERE ref_commande =?",(y[11:19],ref_cmd))
     conn.commit()
+    conn.close()
     return 1
 
 
@@ -227,9 +243,10 @@ def declarer_pb_qualite(ref, lieu, description):
 	try:
 		conn = connection_bdd()
 		cur = conn.cursor()
-		
+		x=datetime.datetime.now()
+		y=str(x)
 	
-		cur.execute("INSERT INTO Qualité(Date_detection, Lieu, Description, Ref_commande) VALUES(?,?,?,?)", (str(datetime.datetime.now()),lieu,description,ref))
+		cur.execute("INSERT INTO Qualité(Date_detection, Lieu, Description, Ref_commande) VALUES(?,?,?,?)", (y[11:19],lieu,description,ref))
 		cur.execute("UPDATE Commande SET Etat_cmd = 'Problème qualité' WHERE ref_commande ="+ref)
 		conn.commit()
 		
@@ -247,6 +264,7 @@ def remettre_stock_pf(ref_cmd):
     cur = conn.cursor()
     cur.execute("UPDATE Commande SET Etat_cmd = 'En stock' WHERE ref_commande ="+ref_cmd)
     conn.commit()
+    conn.close()
     return 1
 
 
@@ -262,6 +280,7 @@ def lancer_prepa(ref_cmd):
     cur = conn.cursor()
     cur.execute("UPDATE Commande SET Etat_cmd = 'En cours de préparation de kits' WHERE ref_commande ="+ref_cmd)
     conn.commit()
+    conn.close()
     return 1
 
 #Fonction pour enregistrer les kits réalisés 
@@ -271,6 +290,7 @@ def finaliser_prepa(ref_cmd):
     cur = conn.cursor()
     cur.execute("UPDATE Commande SET Etat_cmd = 'Kits prêts' WHERE ref_commande ="+ref_cmd)
     conn.commit()
+    conn.close()
     return 1
     
 #Fonction pour livrer AgiLean   
@@ -278,8 +298,11 @@ def livrer_kits(ref_cmd):
 
     conn = connection_bdd()
     cur = conn.cursor()
-    cur.execute("UPDATE Commande SET Etat_cmd = 'Kits livrés à AgiLean', Date_liv_AgiLog=time('now') WHERE ref_commande ="+ref_cmd)
+    x=datetime.datetime.now()
+    y=str(x)
+    cur.execute("UPDATE Commande SET Etat_cmd = 'Kits livrés à AgiLean', Date_liv_AgiLog=? WHERE ref_commande =?",(y[11:19],ref_cmd))
     conn.commit()
+    conn.close()
     return 1
     
 
@@ -329,9 +352,10 @@ def passer_une_commande():
 	erreur = ""
 	if request.method == 'POST':
 		
-		if (request.form.get('choix', type=int) > 0 and request.form.get('choix', type=int) < 5 and request.form.get('choix_opt', type=int) > 0 and request.form.get('choix_opt', type=int) < 7):
-			
-			res = lancer_commande(datetime.datetime.now(),request.form.get('choix', type=int),request.form.get('choix_opt', type=int),"Envoyée à AgiLean")
+		if (request.form.get('choix', type=int) > 0 and request.form.get('choix', type=int) < 5 and request.form.get('choix_opt', type=int) > 0 and request.form.get('choix_opt', type=int) < 8):
+			x=datetime.datetime.now()
+			y=str(x)
+			res = lancer_commande(y[11:19],request.form.get('choix', type=int),request.form.get('choix_opt', type=int),"Envoyée à AgiLean")
 			
 			if (res):
 			
@@ -614,7 +638,8 @@ def injecter_stock():
 # ---------------------------------------
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+    app.run(host='0.0.0.0')
 	
 	
 	

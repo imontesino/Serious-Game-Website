@@ -7,7 +7,7 @@
     <!--[if IE]>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <![endif]-->
-    <title>AgiLean-reception composants</title>
+    <title>Client</title>
  
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     
@@ -26,7 +26,7 @@
 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1" data-scrollreveal="enter top and move 100px, wait 0.5s">
 <h1>Bienvenue dans l'interface de lancement des ordres d'achat</h1>
 
-<h2> Voici la liste des commandes envoyees par AgiLog</h2>
+<h2> Voici la liste des commandes sans composants</h2>
 
 
 
@@ -34,29 +34,31 @@
 	<div class="lp_table">
 		<div class="lp_entetes">
 			<div class="lp_entete">Reference commande</div>
-			<div class="lp_entete">Date d'ordre d'achat</div>
+			<div class="lp_entete">Date commande</div>
 			<div class="lp_entete">Reference produit</div>
                         <div class="lp_entete">Options</div>
+			<div class="lp_entete">Etat commande</div>
 		</div>
 		{% for commande in commandes %}
 			<div class="lp_ligne">
 				<div class="lp_cellule">{{ commande['ref_commande'] }}</div>
-				<div class="lp_cellule">{{ commande['Date_OA'] }}</div>
+				<div class="lp_cellule">{{ commande['Date_commande'] }}</div>
 				<div class="lp_cellule">{{ commande['Ref_prod'] }}</div>
                                 <div class="lp_cellule">{{ commande['ref_opt'] }}</div>
+				<div class="lp_cellule">{{ commande['Etat_cmd'] }}</div>
 			</div>
 		{% endfor %}
 	</div>
 </div>
 
 
-<p> Entrez la reference de la commande pour laquelle vous voulez valider le controle qualite a la reception </p>
+<p> Entrez la reference de la commande pour laquelle vous voulez lancer un OA </p>
 
 {% if msg!="" %}<strong>{{ msg }}</strong><br/><br/>{% endif %}
-<form method='post' action='{{ url_for("reception_composants") }}'>
+<form method='post' action='{{ url_for("lancer_oa") }}'>
 <label for='ref_cmd'>Reference commande</label><input type='text'  name='ref_cmd' value='{{ ref_cmd }}'>
 <br>
-<input type='submit' value='Valider recpetion'>
+<input type='submit' value='Lancer OA'>
 </form>
 
 </div>
